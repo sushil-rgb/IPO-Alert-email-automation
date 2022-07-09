@@ -8,7 +8,7 @@ import os
 
 EMAIL_ADDRESS = os.environ.get("USER_EMAIL")
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
-email_receivers = "gunz19able@gmail.com"
+
 
 class MerolaganiScraper:
     def fetch(self):
