@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 from scraper_functions import get_ua
 from urllib.error import URLError
+from apscheduler.schedulers.blocking import BlockingScheduler
 import os
 
 
@@ -57,3 +58,10 @@ class EmailAutomation:
             smtp.sendmail(EMAIL_ADDRESS, receiver, msg)
 
 
+class Scheduler:
+    sched = BlockingScheduler()
+    @sched.schduled_job('cron', day_of_week='mon-sun', hour=20)
+    def scheduler_email(self, automation_email):
+        automation_email
+
+    sched.start()
