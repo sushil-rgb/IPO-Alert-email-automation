@@ -4,11 +4,14 @@ import requests
 from scraper_functions import get_ua
 from urllib.error import URLError
 from apscheduler.schedulers.blocking import BlockingScheduler
+from email.message import EmailMessage
 import os
 
 
 EMAIL_ADDRESS = os.environ.get("USER_EMAIL")
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
+
+msg = EmailMessage()
 
 
 class MerolaganiScraper:
@@ -47,21 +50,15 @@ class MerolaganiScraper:
 
 class EmailAutomation:
     def send_email(self, email_content, receiver, date):
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        msg = EmailMessage()
+        msg['Subject'] = "New IPO alert!"
+        msg['From'] = EMAIL_ADDRESS
+        msg['To'] = receiver
+        msg.set_content(f"{email_content}\n\nThis news was first posted on {date}")  
+
+        with  smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
             smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
 
-            subject = "NEW IPO ALERT!"
-            body = email_content
-            
-            msg = f"Subject: {subject}\n\n{body}\n\nFirst posted on {date}"
+            smtp.send_message(msg)    
+       
 
-            smtp.sendmail(EMAIL_ADDRESS, receiver, msg)
-
-
-class Scheduler:
-    sched = BlockingScheduler()
-    @sched.schduled_job('cron', day_of_week='mon-sun', hour=20)
-    def scheduler_email(self, automation_email):
-        automation_email
-
-    sched.start()
